@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Participants {
+  id     String  @id
+  name   String
+  poll   Poll?   @relation(fields: [pollId], references: [id])
+  pollId String?
+
+  @@map("participants")
+}
+
+model Poll {
+  id            String         @id
+  topic         String
+  votesPerVoter Int
+  participants  Participants[]
+  adminID       String
+
+  @@map("poll")
+}

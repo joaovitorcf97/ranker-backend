@@ -1,7 +1,9 @@
+import { Request } from 'express';
+
 export type CreatePollFields = {
   topic: string;
   votesPerVoter: number;
-  name: string;
+  nameAdmin: string;
 };
 
 export type JoinPollFields = {
@@ -16,6 +18,7 @@ export type RejoinPollFields = {
 };
 
 export type CreatePollData = {
+  nameAdmin: string;
   pollID: string;
   topic: string;
   votesPerVoter: number;
@@ -27,3 +30,12 @@ export type AddParticipantData = {
   userID: string;
   name: string;
 };
+
+// guard types
+type AuthPayload = {
+  userID: string;
+  pollID: string;
+  name: string;
+};
+
+export type RequestWithAuth = Request & AuthPayload;
