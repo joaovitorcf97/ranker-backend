@@ -34,6 +34,7 @@ export class PollsRepository {
         votesPerVoter,
         participants: {},
         adminID: userID,
+        hasStarted: false,
       };
 
       await this.prisma.poll.create({ data: initialPoll });
@@ -52,16 +53,8 @@ export class PollsRepository {
     }
   }
 
-  async getPoll(pollID: string, userID: string, name: string) {
+  async getPoll(pollID: string) {
     try {
-      await this.prisma.participants.create({
-        data: {
-          id: userID,
-          pollId: pollID,
-          name,
-        },
-      });
-
       const currentPoll = await this.prisma.poll.findFirst({
         where: { id: pollID },
         include: { participants: true },
@@ -73,15 +66,29 @@ export class PollsRepository {
     }
   }
 
-  async addParticipant({ pollID, userID, name }: AddParticipantData) {
+  async addParticipant({ pollID, name, userID }: AddParticipantData) {
     try {
-      const participant = await this.prisma.participants.findUnique({
-        where: { id: userID },
+      await this.prisma.participants.create({
+        data: {
+          id: userID,
+          pollId: pollID,
+          name,
+        },
       });
 
-      return participant;
+      return this.getPoll(pollID);
     } catch (e) {
       throw e;
+    }
+  }
+
+  async removeParticipant(userID: string, pollID: string) {
+    try {
+      await this.prisma.participants.delete({
+        where: { id: userID, pollId: pollID },
+      });
+    } catch (e) {
+      throw new InternalServerErrorException('Failed to remove participant');
     }
   }
 }

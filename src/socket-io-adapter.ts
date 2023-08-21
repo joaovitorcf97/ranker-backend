@@ -1,4 +1,3 @@
-import { WebSocketGateway } from '@nestjs/websockets';
 import { INestApplicationContext, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';

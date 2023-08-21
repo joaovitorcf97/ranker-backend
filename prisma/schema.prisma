@@ -22,6 +22,7 @@ model Poll {
   votesPerVoter Int
   participants  Participants[]
   adminID       String
+  hasStarted    Boolean
 
   @@map("poll")
 }
